@@ -19,6 +19,9 @@ node[] childs       -> array de nos que sao filhos do mesmo
 a arvore vai sendo percorrida ate chegar a node em que childs == null nesse caso nome deve ser igual ao valor (ex: Yes)
 
 iremos correr o ID3 sobre a tabela previamente criada
+
+testar se a parte da falta de exemplos esta correta!
+
 */
 
 public class Main {
@@ -57,9 +60,14 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println("A path for a .csv file must be provided"); 
+            return;
+        }
         File toReadFile = new File(args[0]);
         String[][] dataHolder = getDataHolder(toReadFile);
-
+        DecisionTree.ID3(dataHolder);
+        /*
         System.out.println("dataHolder: ");
         for (int i = 0; i < dataHolder.length; i++) {
             for (int j = 0; j < dataHolder[i].length; j++) {
@@ -67,7 +75,7 @@ public class Main {
             }
             System.out.println();
         }
-
+        */
         return;
     }
 }
