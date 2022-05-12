@@ -11,17 +11,6 @@ out: uma decision tree
 ra = dc, onde ra e o numero de ramos que saiem de um dado atributo e dc e o numero de classes diferentes do atributo
 para executar a funcao da entropia e necessario calcular as classes diferentes
 para calcular as classes diferentes podemos criar uma funcao
-ao inves de pensar em classes como booleans, ranges... pensar como strings. Strings Diferentes = Classes Diferentes, Strings Iguais = Classes Iguais
-
-um node tera:
-String label        -> nome do atributo que lhe deu origem
-node[] childs       -> array de nos que sao filhos do mesmo
-a arvore vai sendo percorrida ate chegar a node em que childs == null nesse caso nome deve ser igual ao valor (ex: Yes)
-
-iremos correr o ID3 sobre a tabela previamente criada
-
-testar se a parte da falta de exemplos esta correta!
-
 */
 
 public class Main {
