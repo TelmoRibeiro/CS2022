@@ -66,7 +66,6 @@ public class Main {
         }
         File toReadFile = new File(args[0]);
         String[][] dataHolder = getDataHolder(toReadFile);
-        DecisionTree.ID3(dataHolder);
         /*
         System.out.println("dataHolder: ");
         for (int i = 0; i < dataHolder.length; i++) {
@@ -76,6 +75,8 @@ public class Main {
             System.out.println();
         }
         */
+        Node rootNode = DecisionTree.ID3(dataHolder);
+        System.out.println(rootNode.label);
         return;
     }
 }

@@ -155,7 +155,7 @@ public class Solve {
 
     public static Node MCTS(Node rootNode) {
         expandedNodes = 0; // counter;
-        for (int i = 0; i < 1400000; i++) {
+        for (int i = 0; i < 10000; i++) {
             System.out.println(i);
 
             LinkedList<Node> visited  = new LinkedList<>();
@@ -174,9 +174,11 @@ public class Solve {
         }
         Node   bestNode  = null;
         double bestValue = 0.0;
-        LinkedList<Node> cLL = (LinkedList<Node>)(rootNode.childsLinkedList).clone();         
+        LinkedList<Node> cLL = (LinkedList<Node>)(rootNode.childsLinkedList).clone();
+        //System.out.println("test: " + cLL.size());
         while(!cLL.isEmpty()) {
             Node testNode = cLL.removeFirst();
+            System.out.println("test: " + testNode.playsCounter);
             if (testNode.playsCounter >= bestValue) {
                 bestValue = testNode.playsCounter;
                 bestNode  = testNode;

@@ -33,27 +33,22 @@ public class DecisionTree {
     }
 
     public static String getMostCommon(String[][] dataHolder) {
-
-        System.out.println("Falg: Possible Bug Zone!"); // test
-        /*
-        String classArray = new String[dataHolder.length - 1];
-        int classCounter = new int[dataHolder.length - 1];
+        String[] classArray = new String[dataHolder.length - 1];
+        int[] classCounter = new int[dataHolder.length - 1];
         int j = dataHolder[0].length - 1;
         for (int i = 1; i < dataHolder.length; i++) {
             int index = getIndex(classArray, dataHolder[i][j]);
-            if (index >= 0) { classCounter[index]++; }
-            if (index <  0) {
+            if (index >= 0 && classArray[index] != null) { classCounter[index]++; }
+            else {
                 classArray[-index] = dataHolder[i][j];
                 classCounter[-index]++;
             }
         }
         int mostCommonIndex = 0;
         for (int i = 0; i < classCounter.length; i++) {
-            if (classCounter[i] >= mostCommonIndex) { mostCommonIndex = i; }
+            if (classCounter[i] >= classCounter[mostCommonIndex]) { mostCommonIndex = i; }
         }
         return classArray[mostCommonIndex];
-        */
-        return null;
     }
 
     // it may only be aplied when we still have att ?!?
