@@ -20,12 +20,15 @@ public class DecisionTree {
         HashSet<String> values = new HashSet<>();
         for (int r = 1; r < rootNode.rows; r++) {
             String value = rootNode.dataHolder[r][classifiersC];
-            if (values.contains(value)) { continue; }
+            if (values.contains(value)) { continue; } // I may be erasing extra branches 
             values.add(value);
             String[][] childDataHolder = rootNode.getChildDataHolder(classifiersC, value);
             rootNode.childsIndex++;
             if (emptyExamples(childDataHolder)) { System.out.println("Work In Progress!"); rootNode.childsIndex--; return null; } // teste
-            else { rootNode.childs[rootNode.childsIndex] = ID3(childDataHolder); }
+            else { 
+                rootNode.branches[rootNode.childsIndex] = value;
+                rootNode.childs[rootNode.childsIndex]   = ID3(childDataHolder); 
+            }
         }
         return rootNode;
     }

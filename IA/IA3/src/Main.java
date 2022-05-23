@@ -54,11 +54,10 @@ public class Main {
         int tabsCounter = -1;
         while(!myLL.isEmpty()) {
             Node currentNode = myLL.removeFirst();
-            System.out.println("Father: " + currentNode.label);
-            System.out.println("Childs: ");
+            System.out.println("FatherNode: " + currentNode.label);
             for (int i = 0; i <= currentNode.childsIndex; i++) {
                 Node child = currentNode.childs[i];
-                System.out.println(child.label);
+                System.out.println(currentNode.branches[i] + " -> " + child.label);
                 myLL.addLast(child);               
             }
         }

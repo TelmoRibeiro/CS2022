@@ -10,6 +10,7 @@ public class Node {
     int         rows;
     int         columns;
     Node[]      childs;
+    String[]    branches;
     int         childsIndex;
 
     Node(String[][] dataHolder) {
@@ -18,6 +19,7 @@ public class Node {
         this.rows        = dataHolder.length;
         this.columns     = dataHolder[0].length;
         this.childs      = new Node[this.rows];
+        this.branches    = new String[this.rows];
         this.childsIndex = -1;
     }
     
@@ -64,30 +66,53 @@ public class Node {
         return;
     }
 
-    // 2O(rows) - if HasMap.contains/put/get are O(1)
-    public double getEntropy(int c) {
-        HashMap<String, Double> valuesMap = new HashMap<>();
-        for (int r = 1; r < this.rows; r++) { // r = 0 is for headers
+    public HashMap<String, Double> protoA(int c) {
+        HashMap<String, Double> map = new HashMap<>();
+        for (int r = 1; r < this.rows; r++) {
             String key   = this.dataHolder[r][c];
-            double value = 0.0; 
-            if (!valuesMap.containsKey(key)) { value = 1.0; }
-            else                             { value = valuesMap.get(key) + 1.0; }
-            valuesMap.put(key, value);
+            double value = 0.0;
+            if (!map.containsKey(key)) { value = 1.0; }
+            else                       { value = map.get(key) + 1.0; }
+            map.put(key, value);
         }
-        double entropy = 0.0;
-        for (HashMap.Entry<String, Double> entry: valuesMap.entrySet()) {
-            double probability = entry.getValue()/(this.rows - 1);
-            entropy -= probability * Math.log(probability) / Math.log(2);
+        return map;
+    }
+
+    public HashMap<String, Double> protoB(int c, String supKey) {
+        HashMap<String, Double> map = new HashMap<>();
+        int nC = this.columns - 1;
+        for (int r = 1; r < this.rows; r++) {
+            if (this.dataHolder[r][c].equals(supKey)) {
+                String key  = this.dataHolder[r][nC];
+                double value = 0.0;
+                if (!map.containsKey(key)) { value = 1.0; }
+                else                       { value = map.get(key) + 1.0; }
+                map.put(key, value);
+            }
         }
-        return entropy;
+        return map;
+    }
+
+    public double protoC(int c) {
+        double avgEntropy = 0.0;
+        HashMap<String, Double> mapA = this.protoA(c);
+        for (HashMap.Entry<String, Double> entryA: mapA.entrySet()) {
+            double entropy = 0.0;
+            HashMap<String, Double> mapB = protoB(c, entryA.getKey());
+            for (HashMap.Entry<String, Double> entryB: mapB.entrySet()) {
+                double probability = entryB.getValue()/entryA.getValue();
+                entropy -= probability * Math.log10(probability) / Math.log10(2);
+            }
+            avgEntropy += entropy * entryA.getValue() / (double)(this.rows - 1);
+        }
+        return avgEntropy;
     }
     
-    // 2O(columns)O(rows) - 2O(rows) comes from getEntropy(_)
     public int getClassifiersColumn() {
         int classifiersColumn     = -1;
         double classifiersEntropy = Double.MAX_VALUE;
         for (int c = 1; c < this.columns - 1; c++) { // c = 0 is for IDs
-            double entropy = this.getEntropy(c);
+            double entropy = this.protoC(c);
             if (entropy < classifiersEntropy) {
                 classifiersEntropy = entropy;
                 classifiersColumn  = c;
