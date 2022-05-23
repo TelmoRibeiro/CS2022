@@ -1,17 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
 import java.util.Scanner;
 
-/*
-in: um ficheiro .csv
-out: uma decision tree
-
-? os headers serao novamente necessarios ?
-ra = dc, onde ra e o numero de ramos que saiem de um dado atributo e dc e o numero de classes diferentes do atributo
-para executar a funcao da entropia e necessario calcular as classes diferentes
-para calcular as classes diferentes podemos criar uma funcao
-*/
+import java.util.LinkedList; // teste 
 
 public class Main {
     public static int countLines(File toReadFile) {
@@ -47,7 +38,7 @@ public class Main {
         }
         return dataHolder;
     }
-
+    
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("A path for a .csv file must be provided"); 
@@ -55,17 +46,22 @@ public class Main {
         }
         File toReadFile = new File(args[0]);
         String[][] dataHolder = getDataHolder(toReadFile);
-        /*
-        System.out.println("dataHolder: ");
-        for (int i = 0; i < dataHolder.length; i++) {
-            for (int j = 0; j < dataHolder[i].length; j++) {
-                System.out.print(dataHolder[i][j] + "\t");
-            }
-            System.out.println();
-        }
-        */
         Node rootNode = DecisionTree.ID3(dataHolder);
-        System.out.println(rootNode.label);
+        // System.out.println(rootNode.label);
+
+        LinkedList<Node> myLL = new LinkedList<>();
+        myLL.addLast(rootNode);
+        int tabsCounter = -1;
+        while(!myLL.isEmpty()) {
+            Node currentNode = myLL.removeFirst();
+            System.out.println("Father: " + currentNode.label);
+            System.out.println("Childs: ");
+            for (int i = 0; i <= currentNode.childsIndex; i++) {
+                Node child = currentNode.childs[i];
+                System.out.println(child.label);
+                myLL.addLast(child);               
+            }
+        }
         return;
     }
 }
