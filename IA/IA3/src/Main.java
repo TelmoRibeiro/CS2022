@@ -1,17 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
 import java.util.Scanner;
 
-/*
-in: um ficheiro .csv
-out: uma decision tree
+import java.util.regex.*;
 
-? os headers serao novamente necessarios ?
-ra = dc, onde ra e o numero de ramos que saiem de um dado atributo e dc e o numero de classes diferentes do atributo
-para executar a funcao da entropia e necessario calcular as classes diferentes
-para calcular as classes diferentes podemos criar uma funcao
-*/
 
 public class Main {
     public static int countLines(File toReadFile) {
@@ -31,13 +23,13 @@ public class Main {
         return counter;
     }
 
-    public static String[][] getDataHolder(File toReadFile) {
-        int lines = countLines(toReadFile);
-        String[][] dataHolder = new String[lines][]; 
+    public static String[][] getDataArray(File decisionTreeFile) {
+        int fileLines = countLines(decisionTreeFile);
+        String[][] dataArray = new String[fileLines][]; 
         try {
-            Scanner fileScanner = new Scanner(toReadFile);
-            for (int l = 0; fileScanner.hasNextLine(); l++) {
-                dataHolder[l] = fileScanner.nextLine().split(",");
+            Scanner fileScanner = new Scanner(decisionTreeFile);
+            for (int l = 0; l < fileLines; l++) {
+                dataArray[l] = fileScanner.nextLine().split(",");
             }
             fileScanner.close();
         }
@@ -45,27 +37,39 @@ public class Main {
             System.out.println("An error ocurred while trying to read the file");
             fileException.printStackTrace();
         }
-        return dataHolder;
+        return dataArray;
+    }
+
+    public static int getColumn(String attribute, String[][] dataArray) {
+        for (int c = 1; c < dataArray[0].length - 1; c++) { // assuming that IDs will not be used as an attribute and Class ofc will not be tested for a classifier
+            if (dataArray[0][c].equals(attribute)) { return c; }
+        }
+        return -1;
+    }
+
+    public static String classify(Node rootNode, int r, String[][] dataArray) {
+        if (rootNode.childsIndex == -1) { return rootNode.label; }
+        int c = getColumn(rootNode.label, dataArray);
+        for (int i = 0; i <= rootNode.childsIndex; i++) {
+            if (rootNode.branches[i].equals(dataArray[r][c])) { return classify(rootNode.childs[i], r, dataArray); }
+        }
+        return null;
     }
 
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println("A path for a .csv file must be provided"); 
-            return;
-        }
-        File toReadFile = new File(args[0]);
-        String[][] dataHolder = getDataHolder(toReadFile);
-        /*
-        System.out.println("dataHolder: ");
-        for (int i = 0; i < dataHolder.length; i++) {
-            for (int j = 0; j < dataHolder[i].length; j++) {
-                System.out.print(dataHolder[i][j] + "\t");
-            }
+        if (args.length == 0) { System.out.println("A path for a .csv file must be provided"); return; }
+        File decisionTreeFile = new File(args[0]);
+        String[][] dataArray  = getDataArray(decisionTreeFile);
+        Node rootNode         = DecisionTree.ID3(dataArray, dataArray);
+        rootNode.printDT(0);
+        if (args.length > 1) {
             System.out.println();
+            File testFile = new File(args[1]);
+            String[][] testArray = getDataArray(testFile);
+            for (int r = 1; r < testArray.length; r++) {
+                System.out.println(classify(rootNode, r, testArray));
+            }
         }
-        */
-        Node rootNode = DecisionTree.ID3(dataHolder);
-        System.out.println(rootNode.label);
         return;
     }
 }
