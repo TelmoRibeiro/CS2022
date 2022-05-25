@@ -1,33 +1,31 @@
 import java.util.HashSet;
 
 public class DecisionTree {
-    public static boolean emptyExamples(String[][] dataHolder) {
-        return dataHolder.length == 1;
-    }
-
-    public static Node ID3(String[][] dataHolder) {
-        Node rootNode = new Node(dataHolder);
-        if (rootNode.allEquals()) {
-            rootNode.getAllEqualsLabel();
-            return rootNode; 
+    public static Node ID3(String[][] dataArray, String[][] fatherDataArray) {
+        Node rootNode = new Node(dataArray, fatherDataArray.length);
+        if (rootNode.allEquals(rootNode.columns - 1)) {
+            rootNode.label = rootNode.getAllEqualsLabel(rootNode.columns - 1);
+            return rootNode;
         }
         if (rootNode.emptyAttributes()) {
-            rootNode.getMostCommon(); 
-            return rootNode; 
+            rootNode.label = rootNode.getMostCommon(rootNode.columns - 1);
+            return rootNode;
         }
-        int classifiersC = rootNode.getClassifiersColumn();
-        rootNode.label = rootNode.dataHolder[0][classifiersC];
-        HashSet<String> values = new HashSet<>();
-        for (int r = 1; r < rootNode.rows; r++) {
-            String value = rootNode.dataHolder[r][classifiersC];
-            if (values.contains(value)) { continue; } // I may be erasing extra branches 
-            values.add(value);
-            String[][] childDataHolder = rootNode.getChildDataHolder(classifiersC, value);
+        int cC = rootNode.getClassifiersColumn();
+        rootNode.label = rootNode.dataArray[0][cC];
+        HashSet<String> values = rootNode.getValues(rootNode.label, fatherDataArray);
+        for (String value: values) {
             rootNode.childsIndex++;
-            if (emptyExamples(childDataHolder)) { System.out.println("Work In Progress!"); rootNode.childsIndex--; return null; } // teste
-            else { 
+            String[][] childDataArray = rootNode.getChildDataArray(cC, value);
+            if (Node.emptyExamples(childDataArray)) {
+                Node childNode = new Node(childDataArray, fatherDataArray.length);
+                childNode.label = rootNode.getMostCommon(rootNode.columns - 1);
                 rootNode.branches[rootNode.childsIndex] = value;
-                rootNode.childs[rootNode.childsIndex]   = ID3(childDataHolder); 
+                rootNode.childs[rootNode.childsIndex]   = childNode;
+            }
+            else {
+                rootNode.branches[rootNode.childsIndex] = value;
+                rootNode.childs[rootNode.childsIndex]   = ID3(childDataArray, dataArray);
             }
         }
         return rootNode;

@@ -2,8 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import java.util.LinkedList; // teste 
-
 public class Main {
     public static int countLines(File toReadFile) {
         int counter = 0;
@@ -22,13 +20,13 @@ public class Main {
         return counter;
     }
 
-    public static String[][] getDataHolder(File toReadFile) {
-        int lines = countLines(toReadFile);
-        String[][] dataHolder = new String[lines][]; 
+    public static String[][] getDataArray(File decisionTreeFile) {
+        int fileLines = countLines(decisionTreeFile);
+        String[][] dataArray = new String[fileLines][]; 
         try {
-            Scanner fileScanner = new Scanner(toReadFile);
-            for (int l = 0; fileScanner.hasNextLine(); l++) {
-                dataHolder[l] = fileScanner.nextLine().split(",");
+            Scanner fileScanner = new Scanner(decisionTreeFile);
+            for (int l = 0; l < fileLines; l++) {
+                dataArray[l] = fileScanner.nextLine().split(",");
             }
             fileScanner.close();
         }
@@ -36,31 +34,16 @@ public class Main {
             System.out.println("An error ocurred while trying to read the file");
             fileException.printStackTrace();
         }
-        return dataHolder;
+        return dataArray;
     }
     
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println("A path for a .csv file must be provided"); 
-            return;
-        }
-        File toReadFile = new File(args[0]);
-        String[][] dataHolder = getDataHolder(toReadFile);
-        Node rootNode = DecisionTree.ID3(dataHolder);
-        // System.out.println(rootNode.label);
-
-        LinkedList<Node> myLL = new LinkedList<>();
-        myLL.addLast(rootNode);
-        int tabsCounter = -1;
-        while(!myLL.isEmpty()) {
-            Node currentNode = myLL.removeFirst();
-            System.out.println("FatherNode: " + currentNode.label);
-            for (int i = 0; i <= currentNode.childsIndex; i++) {
-                Node child = currentNode.childs[i];
-                System.out.println(currentNode.branches[i] + " -> " + child.label);
-                myLL.addLast(child);               
-            }
-        }
+        if (args.length == 0) { System.out.println("A path for a .csv file must be provided"); return; }
+        // deal with args[1]
+        File decisionTreeFile = new File(args[0]);
+        String[][] dataArray  = getDataArray(decisionTreeFile);
+        Node rootNode         = DecisionTree.ID3(dataArray, dataArray);
+        rootNode.printDT(0);
         return;
     }
 }
