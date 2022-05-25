@@ -196,21 +196,3 @@ public class Node {
         return;
     }
 }
-
-/*
-<Pat>
-    Full:
-        <Hun>
-            Yes:
-                <Type>
-                    Fr: Yes             (0)
-                    It: No              (1)
-                    Bu: Yes             (1)
-                    Th:
-                        <Fri>
-                            Yes:    Yes (1)    
-                            No:     No  (1)       
-            No:     No                  (2)
-    None:   No                          (2)
-    Some:   Yes                         (4)
-*/
