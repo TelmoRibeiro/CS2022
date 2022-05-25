@@ -10,7 +10,6 @@ public class Node {
     Node[]      childs;
     String[]    branches;
     int         childsIndex;
-    boolean     isLeaf;
 
     Node(String[][] dataArray, int size) {
         this.label       = null;
@@ -20,7 +19,6 @@ public class Node {
         this.childs      = new Node[size];
         this.branches    = new String[size];
         this.childsIndex = -1;
-        this.isLeaf      = false;
     }
     
     // O(rows)
@@ -183,11 +181,11 @@ public class Node {
         if (this.childsIndex == -1) {
             System.out.print(" ");
             System.out.print(this.label + " ");
-            System.out.print("(" +/*counter +*/")");
+            System.out.print("(" + (this.rows - 1) +")");
             System.out.println();
             return;
         }
-        System.out.println();
+        if (tabsCounter > 0) { System.out.println(); }
         printTabs(tabsCounter);
         System.out.println("<" + this.label + ">");
         for (int i = 0; i <= this.childsIndex; i++) {
